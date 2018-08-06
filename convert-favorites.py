@@ -1,7 +1,7 @@
 import re
 import io
-in_file_name = 'old-fringe_search_results.csv'
-out_file_name = 'my_style.csv'
+in_file_name = 'local/exported-favourites.csv'
+out_file_name = 'local/my_style.csv'
 start_date = 18
 end_date = 27
 
@@ -9,8 +9,10 @@ end_date = 27
 
 # ------------------------------------------------------------------------ #
 
-with io.open(in_file_name,encoding="ucs-2 le bom") as in_file, io.open(
-    out_file_name,  mode='w', encoding="ucs-2 le bom") as out_file: 
+#io.open(in_file_name,encoding="utf_16_le" - Did not work
+
+with open(in_file_name) as in_file, io.open(
+    out_file_name,  mode='w') as out_file: 
         
     def date_in_range(date):
         return float(date) >= start_date and float(date) <= end_date
