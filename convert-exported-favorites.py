@@ -1,18 +1,15 @@
 import re
 import io
-in_file_name = 'local/exported-favourites.csv'
-out_file_name = 'local/my_style.csv'
+
 start_date = 18
 end_date = 27
 
-#in_file = 'simple.csv'
-
-# ------------------------------------------------------------------------ #
-
 #io.open(in_file_name,encoding="utf_16_le" - Did not work
 
-with open(in_file_name) as in_file, io.open(
-    out_file_name,  mode='w') as out_file: 
+with open("exported-favourites.csv") as exported_favourites,\
+    open("my-style-old.csv") as my_style_old, \
+    open("my-style-new.csv",  mode='w') as my_style_new, \
+    open("additions.csv",  mode='w') as additions:
         
     def date_in_range(date):
         return float(date) >= start_date and float(date) <= end_date
@@ -45,7 +42,7 @@ with open(in_file_name) as in_file, io.open(
             
         return "%s:%s" % (hours, mins)
 
-    def process_row(row):
+    def convert_exported(row):
         elems = row.split("	")
         
         title = elems[0].replace(",","")
@@ -57,11 +54,17 @@ with open(in_file_name) as in_file, io.open(
         R="-"
         B="-"
 
-        return (title,times,venue,duration,dates,R,B,link)
+        data = (title,times,venue,duration,dates,R,B,link)
+        return ",".join(data)+"\n"
+
+    old_show_list = set(my_style_old)
 
         
-    in_file.readline() 
-    for line in in_file:
-        out_elems = process_row(line)
-        out_file.write(",".join(out_elems)+"\n")
+    exported_favourites.readline() # skip the header line 
+    for line in exported_favourites:
+        converted = convert_exported(line)
+        
+        my_style_new.write(converted)
+        if converted not in old_show_list:
+            additions.write(converted)
 
