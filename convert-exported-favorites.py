@@ -1,8 +1,8 @@
 import re
 import io
 
-start_date = 18
-end_date = 27
+start_date = 17
+end_date = 26
 
 def remove_non_ascii(text):
     return ''.join(i for i in text if ord(i) > 0)
@@ -71,8 +71,9 @@ with open("exported-favourites.csv") as exported_favourites,\
         link = process_link(elems[6])
         R="-"
         B="-"
+        K="-"
 
-        data = (title,times,venue,duration,dates,R,B,link)
+        data = (title,times,venue,duration,dates,R,B,K,link)
         return ",".join(data)+"\n"
 
 
