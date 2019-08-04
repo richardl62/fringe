@@ -76,8 +76,14 @@ with open("exported-favourites.csv") as exported_favourites,\
         data = (title,times,venue,duration,dates,R,B,K,link)
         return ",".join(data)+"\n"
 
+    def get_show_name(converted) :
+        return converted.split(",")[0]
 
-    old_show_list = set(my_style_old)
+    # read show names from the old show list
+    shows_in_old_list = set()
+    for line in my_style_old:
+        show_name = get_show_name(line)
+        shows_in_old_list.add(show_name)
 
         
     exported_favourites.readline() # skip the header line 
@@ -87,9 +93,10 @@ with open("exported-favourites.csv") as exported_favourites,\
 
             #try:
             converted = convert_exported(line)
-
             my_style_new.write(converted)
-            if converted not in old_show_list:
+
+            show_name = get_show_name(converted)
+            if show_name not in shows_in_old_list:
                 additions.write(converted)
             #except:
             #print("cannot process line: ", raw_line, "\n", line)
