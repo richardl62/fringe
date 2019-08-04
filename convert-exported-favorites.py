@@ -1,5 +1,7 @@
 import re
 import io
+import glob
+import sys
 
 start_date = 17
 end_date = 26
@@ -13,7 +15,21 @@ def remove_non_ascii(text):
 
 #io.open(in_file_name,encoding="utf_16_le" - Did not work
 
-with open("exported-favourites.csv") as exported_favourites,\
+def get_exported_favourites():
+    filenames = glob.glob('fringe_search_results*')
+
+    if len(filenames) == 0 :
+        print("Error: file called 'fringe_search_results*' not found")
+        sys.exit()
+
+    if len(filenames) > 1 :
+        print("Error: More than one file called \'fringe_search_results*\' was found")
+        sys.exit()
+
+    return filenames[0]
+
+
+with open(get_exported_favourites()) as exported_favourites,\
     open("my-style-old.csv") as my_style_old, \
     open("my-style-new.csv",  mode='w') as my_style_new, \
     open("additions.csv",  mode='w') as additions:
