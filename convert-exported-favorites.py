@@ -32,9 +32,9 @@ with open("exported-favourites.csv") as exported_favourites,\
         #        out_dates += date + " "
         for date in raw_dates.replace("\"","").split(",") :
             if "Jul" not in date: 
-                num = float(date.replace(" Aug",""))
-                if num >= start_date and num <= end_date:
-                    out_dates += date + " "
+                num = date.replace(" Aug","")
+                if float(num) >= start_date and float(num) <= end_date:
+                    out_dates += num + " "
         return out_dates.rstrip()
 
 
