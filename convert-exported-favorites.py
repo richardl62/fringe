@@ -28,12 +28,13 @@ def get_exported_favourites():
 
     return filenames[0]
 
-
-with open(get_exported_favourites()) as exported_favourites,\
+# /*, encoding='utf-8'*/
+with open(get_exported_favourites(),encoding='windows-1252') as exported_favourites,\
     open("my-style-old.csv") as my_style_old, \
     open("my-style-new.csv",  mode='w') as my_style_new, \
-    open("additions.csv",  mode='w') as additions:
-        
+    open("additions.csv",  mode='w') as additions, \
+    open("raw_lines.txt",mode='w') as raw_lines, \
+    open("ascii_lines.txt",mode='w') as ascii_lines:   
     def date_in_range(date):
         return float(date) >= start_date and float(date) <= end_date
 
@@ -101,22 +102,23 @@ with open(get_exported_favourites()) as exported_favourites,\
         show_name = get_show_name(line)
         shows_in_old_list.add(show_name)
 
-    # The first byte caused problems due to a bad hex value
-    # so ignore it
-    try:  
-        exported_favourites.read(1) # skip the header line 
-    except:
-        pass
-    
+
+
     lineno = 0
     for raw_line in exported_favourites:
+
+        if not raw_line:
+            break
+
+        line = remove_non_ascii(raw_line)
         lineno += 1
+        raw_lines.write("%d: %s" % (lineno, raw_line) )
+        ascii_lines.write("%d: %s" % (lineno, line) )
         if(lineno == 1):
             continue
 
-        line = remove_non_ascii(raw_line)
-        if(len(line) > 0):
 
+        if(len(line) > 0):
             try:
                 converted = convert_exported(line)
                 my_style_new.write(converted)
