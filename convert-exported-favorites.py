@@ -23,7 +23,7 @@ def get_exported_favourites():
         sys.exit()
 
     if len(filenames) > 1 :
-        print("Error: More than one file called \'fringe_search_results*\' was found")
+        print("Error: More  than one file called \'fringe_search_results*\' was found")
         sys.exit()
 
     return filenames[0]
@@ -101,19 +101,35 @@ with open(get_exported_favourites()) as exported_favourites,\
         show_name = get_show_name(line)
         shows_in_old_list.add(show_name)
 
-        
-    exported_favourites.readline() # skip the header line 
+    # The first byte caused problems due to a bad hex value
+    # so ignore it
+    try:  
+        exported_favourites.read(1) # skip the header line 
+    except:
+        pass
+    
+    lineno = 0
     for raw_line in exported_favourites:
+        lineno += 1
+        if(lineno == 1):
+            continue
+
         line = remove_non_ascii(raw_line)
         if(len(line) > 0):
 
-            #try:
-            converted = convert_exported(line)
-            my_style_new.write(converted)
+            try:
+                converted = convert_exported(line)
+                my_style_new.write(converted)
+                show_name = get_show_name(converted)
+                if show_name not in shows_in_old_list:
+                    additions.write(converted)
+            except Exception as e:
+                 print("WARNING: Cannot process line ", lineno, ":", raw_line, "\n", 
+                    line, "\n",
+                    "Error: ", e, "\n")
 
-            show_name = get_show_name(converted)
-            if show_name not in shows_in_old_list:
-                additions.write(converted)
-            #except:
-            #print("cannot process line: ", raw_line, "\n", line)
+print("Done")
+
+
+
 
