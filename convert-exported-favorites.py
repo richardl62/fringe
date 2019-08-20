@@ -111,24 +111,23 @@ with open(get_exported_favourites(),encoding='windows-1252') as exported_favouri
             break
 
         line = remove_non_ascii(raw_line)
-        lineno += 1
-        raw_lines.write("%d: %s" % (lineno, raw_line) )
-        ascii_lines.write("%d: %s" % (lineno, line) )
-        if(lineno == 1):
-            continue
-
-
         if(len(line) > 0):
             try:
+                lineno += 1
+                raw_lines.write("%d: %s" % (lineno, raw_line) )
+                ascii_lines.write("%d: %s" % (lineno, line) )
+                if(lineno == 1):
+                    continue
+
+
                 converted = convert_exported(line)
                 my_style_new.write(converted)
                 show_name = get_show_name(converted)
                 if show_name not in shows_in_old_list:
                     additions.write(converted)
             except Exception as e:
-                 print("WARNING: Cannot process line ", lineno, ":", raw_line, "\n", 
-                    line, "\n",
-                    "Error: ", e, "\n")
+                print("WARNING: Cannot process line ", lineno, ":", raw_line, "\n", 
+                "Report error: ", e, "\n")
 
 print("Done")
 
