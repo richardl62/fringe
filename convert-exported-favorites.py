@@ -48,7 +48,7 @@ with open(get_exported_favourites(),encoding='windows-1252') as exported_favouri
         #    if date_in_range(date):
         #        out_dates += date + " "
         for date in raw_dates.replace("\"","").split(",") :
-            if "Jul" not in date: 
+            if "Aug" in date: 
                 num = date.replace(" Aug","")
                 if float(num) >= start_date and float(num) <= end_date:
                     out_dates += num + " "
