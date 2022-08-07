@@ -3,8 +3,8 @@ import io
 import glob
 import sys
 
-start_date = 17
-end_date = 26
+start_date = 16
+end_date = 22
 
 def remove_non_ascii(text):
     return ''.join(i for i in text if ord(i) > 0)
@@ -87,10 +87,9 @@ with open(get_exported_favourites(),encoding='windows-1252') as exported_favouri
         dates = process_dates(elems[5])
         link = process_link(elems[6])
         R="-"
-        B="-"
         K="-"
 
-        data = (title,times,venue,duration,dates,R,B,K,link)
+        data = (title,times,venue,duration,dates,R,K,link)
         return ",".join(data)+"\n"
 
     def get_show_name(converted) :
