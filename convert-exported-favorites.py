@@ -28,9 +28,22 @@ def get_exported_favourites():
 
     return filenames[0]
 
+def get_matching_old_show_line(line_to_match):
+    def get_show_name(line) :
+        return line.split(",")[0].strip()
+
+    show_name = get_show_name(line_to_match)
+    
+    with open("my-style-old.csv") as my_style_old:
+
+        for line in my_style_old:
+            if show_name == get_show_name(line):
+                return line
+    
+    return False
+
 # /*, encoding='utf-8'*/
 with open(get_exported_favourites(),encoding='windows-1252') as exported_favourites,\
-    open("my-style-old.csv") as my_style_old, \
     open("my-style-new.csv",  mode='w') as my_style_new, \
     open("additions.csv",  mode='w') as additions, \
     open("raw_lines.txt",mode='w') as raw_lines, \
@@ -92,17 +105,6 @@ with open(get_exported_favourites(),encoding='windows-1252') as exported_favouri
         data = (title,times,venue,duration,dates,R,K,link)
         return ",".join(data)+"\n"
 
-    def get_show_name(converted) :
-        return converted.split(",")[0]
-
-    # read show names from the old show list
-    shows_in_old_list = set()
-    for line in my_style_old:
-        show_name = get_show_name(line)
-        shows_in_old_list.add(show_name)
-
-
-
     lineno = 0
     for raw_line in exported_favourites:
 
@@ -118,12 +120,15 @@ with open(get_exported_favourites(),encoding='windows-1252') as exported_favouri
                 if(lineno == 1):
                     continue
 
-
                 converted = convert_exported(line)
+                old_line = get_matching_old_show_line(converted)
+                if old_line:
+                    my_style_new.write("%s\n"%old_line)
+                    continue
+
                 my_style_new.write(converted)
-                show_name = get_show_name(converted)
-                if show_name not in shows_in_old_list:
-                    additions.write(converted)
+                additions.write(converted)
+
             except Exception as e:
                 print("WARNING: Cannot process line ", lineno, ":", raw_line, "\n", 
                 "Report error: ", e, "\n")
